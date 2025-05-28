@@ -229,81 +229,59 @@ app.post("/warehouse", async (req, res) => {
   } = req.body;
 
   try {
+    // Total volume of warehouse
     const usable = lengthWarehouse * WidthWarehouse * HeightWarehouse;
 
+    // Volume of one rack and one bin
     const rackVolume = LengthOfRacks * WidthOfRacks * HeightOfRacks;
     const binVolume = LengthOfBins * WidthOfBins * HeightOfBins;
 
-    const maxRacks = Math.floor(usable / rackVolume);
-    const maxBins = Math.floor(usable / binVolume);
-
-    if (numberOfRacks > maxRacks) {
-      return res.status(400).send(`You can only add a maximum of ${maxRacks} racks based on the available space.`);     }
-
-    const maxBinsForInputRacks = numberOfRacks * (Math.floor(maxBins / numberOfRacks)); // Calculate number of bins per rack
-    if (maxBinsForInputRacks < maxBins) {
-      return res.status(400).send(`You can only add a maximum of ${maxBinsForInputRacks} bins across all racks.`);
+    // Check if all racks can fit inside warehouse
+    const totalRackVolume = numberOfRacks * rackVolume;
+    if (totalRackVolume > usable) {
+      return res.status(400).send(`You can only add a maximum of ${Math.floor(usable / rackVolume)} racks based on available warehouse space.`);
     }
 
-    // Step 1: Insert Warehouse Details and get warehouse_id
+    // How many bins fit in one rack?
+    const binsPerRack = Math.floor(rackVolume / binVolume);
+    if (binsPerRack < 1) {
+      return res.status(400).send("Bin size is too large to fit even one inside a rack.");
+    }
+
+    // Total number of bins
+    const totalBins = numberOfRacks * binsPerRack;
+
+    // STEP 1: Insert warehouse
     const warehouseRes = await db.query(
       "INSERT INTO warehouse(name, company_name, length, width, height, usable_space) VALUES ($1, $2, $3, $4, $5, $6) RETURNING warehouse_id",
       [warehouseName, req.session.companyName, lengthWarehouse, WidthWarehouse, HeightWarehouse, usable]
     );
-
     const warehouse_id = warehouseRes.rows[0].warehouse_id;
 
-    // Step 2: Calculate the bin capacity and how many bins we can fit in the warehouse
-    const binCapacity = LengthOfBins * WidthOfBins * HeightOfBins;
-    const numberOfBins = Math.floor(usable / binCapacity);
-
-    // Insert multiple bins into the database
+    // STEP 2: Insert racks and bins
+    const rackInsertPromises = [];
     const binInsertPromises = [];
-    let binCounter = 0;
-    for (let i = 0; i < numberOfBins; i++) {
-      const rackId = Math.floor(i / Math.floor(numberOfBins / numberOfRacks)) + 1;
 
-      binInsertPromises.push(
-        db.query(
-          "INSERT INTO bins(warehouse_id, length, width, height, capacity, current_load, rack_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-          [warehouse_id, LengthOfBins, WidthOfBins, HeightOfBins, binCapacity, 0, rackId] 
-        )
-      );
-      binCounter++;
-    }
-    
-    // Wait karega Jab tak pure Insert nhi ho jate
-    await Promise.all(binInsertPromises);
-
-    // Step 3: Get the total number of bins and distribute them across the racks
-    const binRes = await db.query("SELECT bin_id FROM bins WHERE warehouse_id = $1", [warehouse_id]);
-    
-    const binIDs = binRes.rows.map((bin) => bin.bin_id);
-
-    // Distribute the bins across racks
-    const binsPerRack = Math.floor(numberOfBins / numberOfRacks);
-    const remainingBins = numberOfBins % numberOfRacks;
-
-    const rackInsert = [];
     for (let i = 0; i < numberOfRacks; i++) {
-      let binsInRack = binsPerRack;
-      if (i < remainingBins) {
-        binsInRack++; // Distribute remaining bins to the first few racks
-      }
-
-      // Assign bins to the current rack
       const rackName = `Rack ${i + 1}`;
-      const rackPromise = db.query(
-        "INSERT INTO racks(warehouse_id, name, length, width, height, number_of_bins) VALUES ($1, $2, $3, $4, $5, $6)",
-        [warehouse_id, rackName, LengthOfRacks, WidthOfRacks, HeightOfRacks, binsInRack]
+      const rackResult = await db.query(
+        "INSERT INTO racks(warehouse_id, name, length, width, height, number_of_bins) VALUES ($1, $2, $3, $4, $5, $6) RETURNING rack_id",
+        [warehouse_id, rackName, LengthOfRacks, WidthOfRacks, HeightOfRacks, binsPerRack]
       );
+      const rackId = rackResult.rows[0].rack_id;
 
-      rackInsert.push(rackPromise);
+      for (let j = 0; j < binsPerRack; j++) {
+        binInsertPromises.push(
+          db.query(
+            "INSERT INTO bins(warehouse_id, length, width, height, capacity, current_load, rack_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+            [warehouse_id, LengthOfBins, WidthOfBins, HeightOfBins, binVolume, 0, rackId]
+          )
+        );
+      }
     }
 
-    
-    await Promise.all(rackInsert);
-    req.session.warehouseMsg = "Warehouse created successfully with optimized bins and racks!";
+    await Promise.all(binInsertPromises);
+    req.session.warehouseMsg = `Warehouse created with ${numberOfRacks} racks and ${totalBins} bins.`;
     res.redirect("/home");
   } catch (err) {
     console.error("Error creating warehouse:", err);
@@ -358,6 +336,7 @@ app.post("/submit-batch", async (req, res) => {
 
   try {
     const allProducts = JSON.parse(req.body.products);
+
     if (!Array.isArray(allProducts) || allProducts.length === 0) {
       return res.send("No products received.");
     }
@@ -375,18 +354,44 @@ app.post("/submit-batch", async (req, res) => {
     );
 
     const bins = binsRes.rows;
-    const totalCapacity = bins.reduce((sum, bin) => sum + (bin.capacity - bin.current_load), 0);
-
-
-    // reduce()-> A method that combines all elements of an array into a single value, by applying a function one item at a time.
+    const totalCapacity = bins.reduce(
+      (sum, bin) => sum + (bin.capacity - bin.current_load),
+      0
+    );
 
     const selectedProducts = knapsack01(allProducts, totalCapacity);
-    // Set of Unique Name Product
-    const selectedNames = new Set(selectedProducts.map(p => p.name));
+    const selectedNames = new Set(selectedProducts.map((p) => p.name));
+    const remainingProducts = allProducts.filter((p) => !selectedNames.has(p.name));
 
-    // Those Name Who are not Selected in selectedNames
-    const remainingProducts = allProducts.filter(p => !selectedNames.has(p.name));
+    const insertProductIntoBin = async (product, bin, unitsToPlace, volumeToAdd) => {
+      const priorityValue = (() => {
+        const p = product.priority?.trim().toLowerCase();
+        if (p === "high") return 2;
+        if (p === "medium") return 1;
+        return 0;
+      })();
 
+      await db.query(
+        `INSERT INTO products (name, size, weight, quantity, priority, warehouse, company_name, bin_id, rack_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          product.name,
+          product.size,
+          product.weight,
+          unitsToPlace,
+          priorityValue,
+          warehouse,
+          company,
+          bin.bin_id,
+          bin.rack_id,
+        ]
+      );
+
+      await db.query(
+        "UPDATE bins SET current_load = current_load + $1 WHERE bin_id = $2",
+        [volumeToAdd, bin.bin_id]
+      );
+    };
 
     for (const product of selectedProducts) {
       let remainingQty = product.quant;
@@ -406,20 +411,7 @@ app.post("/submit-batch", async (req, res) => {
           const unitsToPlace = Math.min(maxUnitsFit, remainingQty);
           const volumeToAdd = unitsToPlace * unitVolume;
 
-          await db.query(
-            `INSERT INTO products (name, size, weight, quantity, priority, warehouse, company_name, bin_id, rack_id)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-            [
-              product.name, product.size, product.weight, unitsToPlace,
-              product.priority === 'High' ? 2 : (product.priority === 'Medium' ? 1 : 0),
-              warehouse, company, bin.bin_id, bin.rack_id
-            ]
-          );
-
-          await db.query(
-            "UPDATE bins SET current_load = current_load + $1 WHERE bin_id = $2",
-            [volumeToAdd, bin.bin_id]
-          );
+          await insertProductIntoBin(product, bin, unitsToPlace, volumeToAdd);
 
           remainingQty -= unitsToPlace;
           if (remainingQty === 0) break;
@@ -428,7 +420,7 @@ app.post("/submit-batch", async (req, res) => {
 
       if (remainingQty > 0) {
         await db.query("ROLLBACK");
-        return res.send(`Not enough space for product "${product.name}".`);
+        return res.send(`❌ Not enough space for product "${product.name}".`);
       }
     }
 
@@ -451,20 +443,7 @@ app.post("/submit-batch", async (req, res) => {
           const unitsToPlace = Math.min(maxUnitsFit, remainingQty);
           const volumeToAdd = unitsToPlace * unitVolume;
 
-          await db.query(
-            `INSERT INTO products (name, size, weight, quantity, priority, warehouse, company_name, bin_id, rack_id)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-            [
-              product.name, product.size, product.weight, unitsToPlace,
-              product.priority === 'High' ? 2 : (product.priority === 'Medium' ? 1 : 0),
-              warehouse, company, bin.bin_id, bin.rack_id
-            ]
-          );
-
-          await db.query(
-            "UPDATE bins SET current_load = current_load + $1 WHERE bin_id = $2",
-            [volumeToAdd, bin.bin_id]
-          );
+          await insertProductIntoBin(product, bin, unitsToPlace, volumeToAdd);
 
           remainingQty -= unitsToPlace;
         }
@@ -472,19 +451,21 @@ app.post("/submit-batch", async (req, res) => {
 
       if (remainingQty > 0) {
         await db.query("ROLLBACK");
-        return res.send(`❌ Not enough space for product "${product.name}" (even across all bins).`);
+        return res.send(
+          `❌ Not enough space for product "${product.name}" (even across all bins).`
+        );
       }
     }
 
     await db.query("COMMIT");
     res.redirect("/home");
-
   } catch (error) {
     await db.query("ROLLBACK");
     console.error("Error in /submit-batch:", error);
     res.status(500).send("Internal Server Error");
   }
 });
+
 
 
 
