@@ -47,9 +47,9 @@
       <div class="heading"><h2>Racks Details</h2></div>
       <div class="mainForm">
         <div class="same first">
-          <div class="name">
-            <label>Number of Racks:</label>
-            <input type="number" name="numberOfRacks" required />
+           <div class="length">
+            <label>Length of Racks:</label>
+            <input type="number" name="LengthOfRacks"  step = "any " required />
           </div>
           <div class="width">
             <label>Width of Racks:</label>
@@ -57,13 +57,15 @@
           </div>
         </div>
         <div class="same second">
-          <div class="length">
-            <label>Length of Racks:</label>
-            <input type="number" name="LengthOfRacks"  step = "any " required />
-          </div>
+         
           <div class="height">
             <label>Height of Racks:</label>
             <input type="number" name="HeightOfRacks"  step = "any " required />
+          </div>
+          <div class="name">
+            <label>Number of Racks:</label>
+            <input type="number" name="numberOfRacks" id="numberOfRacks" required min="0"/>
+
           </div>
         </div>
       </div>
@@ -120,6 +122,53 @@
       }
     });
   });
+
+
+  function getValue(name) {
+    const input = document.getElementsByName(name)[0];
+    return input && input.value ? parseFloat(input.value) : 0;
+  }
+
+  function calculateRacks() {
+    const warehouseLength = getValue("lengthWarehouse");
+    const warehouseWidth = getValue("WidthWarehouse");
+    const warehouseHeight = getValue("HeightWarehouse");
+
+    const rackLength = getValue("LengthOfRacks");
+    const rackWidth = getValue("WidthOfRacks");
+    const rackHeight = getValue("HeightOfRacks");
+
+    const warehouseVolume = warehouseLength * warehouseWidth * warehouseHeight;
+    const rackVolume = rackLength * rackWidth * rackHeight;
+
+    const numRacksInput = document.getElementById("numberOfRacks");
+
+ 
+    if (warehouseVolume > 0 && rackVolume > 0) {
+      const maxRacks = Math.floor(warehouseVolume / rackVolume);
+      numRacksInput.max = maxRacks;
+      numRacksInput.value = maxRacks; 
+    } else {
+      numRacksInput.value = "";
+      numRacksInput.removeAttribute("max");
+    }
+  }
+
+  const inputFieldsToWatch = [
+    "lengthWarehouse", "WidthWarehouse", "HeightWarehouse",
+    "LengthOfRacks", "WidthOfRacks", "HeightOfRacks"
+  ];
+
+  inputFieldsToWatch.forEach(name => {
+    const input = document.getElementsByName(name)[0];
+    if (input) {
+      input.addEventListener("input", calculateRacks);
+    }
+  });
+ 
+
+
+  
 </script>
 
 <%- include('partials/footer.ejs') %>
