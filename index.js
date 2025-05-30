@@ -63,18 +63,26 @@ app.get("/makeInv", (req, res) => {
 
 
 // Manage Inventory
-app.get("/manageInv", (req, res) => {
-  const { warehouseName } = req.query;
-  const binName = req.session.binnid;
-  const rackName = req.session.rackkid;
-  if (warehouseName) {
-    req.session.warehouseName = warehouseName;
-  }
-  console.log("Selected warehouse name:", req.session.warehouseName);
-  res.render("managingInv", { warehouseName: req.session.warehouseName, binName , rackName });
-  
+app.get("/manageInv", async (req, res) => {
+    const { warehouseName } = req.query;
+    const binName = req.session.binnid;
+    const rackName = req.session.rackkid;
+    const result = await db.query("SELECT capacity FROM bins LIMIT 1");
+    const capacity = result.rows.length ? result.rows[0].capacity : null;
 
+    if (warehouseName) {
+      req.session.warehouseName = warehouseName;
+    }
+
+    console.log("Selected warehouse name:", req.session.warehouseName);
+    res.render("managingInv", {
+      warehouseName: req.session.warehouseName,
+      binName,
+      rackName,
+      capacity
+    }); 
 });
+
 
 
 // Home Route
@@ -235,7 +243,7 @@ app.post("/warehouse", async (req, res) => {
     // Volume of one rack and one bin
     const rackVolume = LengthOfRacks * WidthOfRacks * HeightOfRacks;
     const binVolume = LengthOfBins * WidthOfBins * HeightOfBins;
-
+    req.session.load = binVolume;
     // Check if all racks can fit inside warehouse
     const totalRackVolume = numberOfRacks * rackVolume;
     if (totalRackVolume > usable) {
@@ -352,8 +360,9 @@ app.post("/submit-batch", async (req, res) => {
        ORDER BY bin_id`,
       [warehouse, company]
     );
-
     const bins = binsRes.rows;
+   
+    
     const totalCapacity = bins.reduce(
       (sum, bin) => sum + (bin.capacity - bin.current_load),
       0

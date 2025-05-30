@@ -308,3 +308,14 @@
 #aa span{
   color: var(--blueColour);
 }
+
+
+#Note{
+  position: absolute;
+    top: 4rem;
+    right: 2.3rem;
+    font-size: 1.1rem;
+    color: red;
+    font-weight: 500;
+    font-family: 'InterMedium';
+}
