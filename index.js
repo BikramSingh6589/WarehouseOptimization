@@ -6,6 +6,7 @@ const session = require("express-session");
 const pg = require("pg");
 
 const app = express();
+const nodemailer = require("nodemailer");
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,6 +32,17 @@ const db = new pg.Client({
 });
 
 db.connect();
+
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  port: 465,
+  secure: true, // true for port 465, false for other ports
+  auth: {
+    user: "bishtbiko@gmail.com",
+    pass: "aips gyqe rpgu uydv",
+  },
+});
 
 
 // Get Routes ----------------------------------------------
@@ -105,6 +117,15 @@ app.get("/home", (req, res) => {
 });
 
 
+// Otp Page
+
+app.get("/verify-otp", (req, res) => {
+  
+  res.render("verify-otp.ejs",{
+    name : req.session.tempUser.username
+  }); 
+});
+
 // Warehouse Route
 app.get("/warehouse", async (req, res) => {
   try {
@@ -171,18 +192,58 @@ app.post("/signup", async (req, res) => {
       return res.redirect("/");
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.query(
-      "INSERT INTO users (name, email, password, company_name) VALUES ($1, $2, $3, $4)",
-      [name, email, hashedPassword, companyName]
-    );
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    res.redirect("/signin");
+    req.session.tempUser = {
+      username : name,
+      useremail : email,
+      pass  : password,
+      cpnyNmae : companyName,
+      otp : otp,
+    };
+   
+     const info = await transporter.sendMail({
+      from: `"Blog Website" bishtbiko@gmail.com>`, // sender address
+      to: email, // list of receivers
+      subject: "Your OTP Code", // Subject line
+      text: `Your OTP code is ${otp}`, // plain text body
+      html: `<b>Your OTP code is <strong>${otp}</strong></b>`, // html body
+    });
+
+    console.log("OTP sent : " , info.messageId);
+
+    res.redirect("/verify-otp");
+       
+
+   
   } catch (err) {
     console.log(err);
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+app.post("/verify-otp", async (req, res) => {
+  const { otp } = req.body;
+
+  if (otp === req.session.tempUser.otp) {
+    try {
+      const hashedPassword = await bcrypt.hash(req.session.tempUser.pass, 10);
+      await db.query(
+      "INSERT INTO users (name, email, password, company_name) VALUES ($1, $2, $3, $4)",
+      [req.session.tempUser.username, req.session.tempUser.useremail, hashedPassword, req.session.tempUser.cpnyNmae]
+    );
+     res.redirect("/signin");
+
+    } catch (error) {
+      console.error("Error completing registration:", error);
+      res.status(500).send("Server Error");
+    }
+  } else {
+    res.status(400).send("Invalid OTP. Please try again.");
+  }
+});
+
 
 // Signin Section
 
@@ -299,6 +360,8 @@ app.post("/warehouse", async (req, res) => {
 
 
   
+
+
 
 
 

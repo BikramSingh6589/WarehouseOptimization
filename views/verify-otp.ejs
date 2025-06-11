@@ -1,0 +1,23 @@
+<%- include('partials/header.ejs') %>
+<link rel="stylesheet" href="/styles/otp.css">
+<!-- <link rel="stylesheet" href="/styles/common.css"> -->
+ <% if(locals.name){ %> 
+  <div class="Heading">
+    <h1>Two Step Verification</h1>
+    
+    <h3>Enter the verification code Send to <span><%= name %></span></h3>
+  </div>
+    <form action="/verify-otp" method="POST">
+      <label for="Content">Type your 6 Digit code : </label>
+     
+      <input type="number" id="otp" name="otp" required maxlength="6" pattern="\d{6}">
+      <button type="submit">Verify</button>
+    </form>
+ 
+    
+   <% } else { %> 
+  
+    <h1>Server Error Please Contact Developer For this Issue</h1>
+    <% } %>      
+
+<%- include('partials/footer.ejs') %>
