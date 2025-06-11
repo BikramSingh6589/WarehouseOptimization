@@ -359,17 +359,11 @@ app.post("/warehouse", async (req, res) => {
 });
 
 
-  
-
-
-
-
 
 function knapsack01(items, capacity) {
   const n = items.length;
   const dp = Array.from({ length: n + 1 }, () => Array(capacity + 1).fill(0));
   const weights = items.map(item => item.size * item.quant);
-
   const values = items.map(item => {
     if (item.priority === 'High') return 2;
     if (item.priority === 'Medium') return 1;
@@ -407,7 +401,6 @@ app.post("/submit-batch", async (req, res) => {
 
   try {
     const allProducts = JSON.parse(req.body.products);
-
     if (!Array.isArray(allProducts) || allProducts.length === 0) {
       return res.send("No products received.");
     }
@@ -418,23 +411,23 @@ app.post("/submit-batch", async (req, res) => {
       `SELECT bin_id, capacity, current_load, rack_id
        FROM bins
        WHERE warehouse_id = (
-         SELECT warehouse_id FROM warehouse WHERE name = $1 AND company_name = $2
+         SELECT warehouse_id FROM warehouse WHERE name = $1 AND company_name = $2 LIMIT 1
        )
        ORDER BY bin_id`,
       [warehouse, company]
     );
     const bins = binsRes.rows;
-   
-    
+
+
     const totalCapacity = bins.reduce(
       (sum, bin) => sum + (bin.capacity - bin.current_load),
       0
     );
-
     const selectedProducts = knapsack01(allProducts, totalCapacity);
-    const selectedNames = new Set(selectedProducts.map((p) => p.name));
-    const remainingProducts = allProducts.filter((p) => !selectedNames.has(p.name));
+    const selectedNames = new Set(selectedProducts.map(p => p.name));
+    const remainingProducts = allProducts.filter(p => !selectedNames.has(p.name));
 
+  
     const insertProductIntoBin = async (product, bin, unitsToPlace, volumeToAdd) => {
       const priorityValue = (() => {
         const p = product.priority?.trim().toLowerCase();
@@ -464,7 +457,6 @@ app.post("/submit-batch", async (req, res) => {
         [volumeToAdd, bin.bin_id]
       );
     };
-
     for (const product of selectedProducts) {
       let remainingQty = product.quant;
       const unitVolume = product.size;
@@ -477,10 +469,8 @@ app.post("/submit-batch", async (req, res) => {
 
         const { capacity, current_load } = binStatus.rows[0];
         const available = capacity - current_load;
-        const maxUnitsFit = Math.floor(available / unitVolume);
-
-        if (maxUnitsFit > 0) {
-          const unitsToPlace = Math.min(maxUnitsFit, remainingQty);
+        if (available >= unitVolume) {
+          const unitsToPlace = Math.min(Math.floor(available / unitVolume), remainingQty);
           const volumeToAdd = unitsToPlace * unitVolume;
 
           await insertProductIntoBin(product, bin, unitsToPlace, volumeToAdd);
@@ -496,6 +486,9 @@ app.post("/submit-batch", async (req, res) => {
       }
     }
 
+    // -----------------------------------
+    // Handle Remaining Products (Fallback Strategy)
+    // -----------------------------------
     for (const product of remainingProducts) {
       let remainingQty = product.quant;
       const unitVolume = product.size;
@@ -509,10 +502,10 @@ app.post("/submit-batch", async (req, res) => {
 
         const { capacity, current_load } = binStatus.rows[0];
         const available = capacity - current_load;
-        const maxUnitsFit = Math.floor(available / unitVolume);
 
-        if (maxUnitsFit > 0) {
-          const unitsToPlace = Math.min(maxUnitsFit, remainingQty);
+        // ✅ Same Fix Applied Here
+        if (available >= unitVolume) {
+          const unitsToPlace = Math.min(Math.floor(available / unitVolume), remainingQty);
           const volumeToAdd = unitsToPlace * unitVolume;
 
           await insertProductIntoBin(product, bin, unitsToPlace, volumeToAdd);
@@ -529,6 +522,9 @@ app.post("/submit-batch", async (req, res) => {
       }
     }
 
+    // -----------------------------------
+    // Commit If All Insertions Succeed
+    // -----------------------------------
     await db.query("COMMIT");
     res.redirect("/home");
   } catch (error) {
@@ -537,8 +533,6 @@ app.post("/submit-batch", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
-
 
 
 
