@@ -37,15 +37,20 @@ html,body{
 
 @font-face {
     font-family: InterRegular;
-    src: url(../fonts/Inter-Regular.ttf);
+    src: url(../fonts/BaskervvilleSC-Regular.ttf)
 }
 @font-face {
     font-family: CaveatMedium;
-    src: url(../fonts/Caveat-Medium.ttf);
+    src: url(../fonts/BaskervvilleSC-Regular.ttf)
 }
 
 @font-face {
     font-family: CaveatBold;
+    src: url(../fonts/Caveat-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: cavv;
     src: url(../fonts/Caveat-SemiBold.ttf);
 }
 

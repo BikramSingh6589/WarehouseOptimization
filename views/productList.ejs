@@ -1,17 +1,28 @@
 <%- include('partials/header.ejs') %>
-<title>Product List</title>
-<link rel="stylesheet" href="/styles/products.css">
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Product List</title>
+  <link rel="stylesheet" href="/styles/products.css">
   <link rel="stylesheet" href="/css/productList.css">
+  <style>
+    #search {
+      margin: 20px;
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
 
   <h1>Product List</h1>
 
+  <input type="text" id="search" placeholder="Search by any field...">
   <table>
     <thead>
       <tr>
@@ -23,14 +34,14 @@
         <th>Priority</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="productTable">
       <% products
           .sort((a, b) => {
             const priorityOrder = { High: 1, Medium: 2, Low: 3 };
             return priorityOrder[a.priority] - priorityOrder[b.priority];
           })
           .forEach(product => { %>
-            <tr>
+        <tr>
           <td><%= product.product_id %></td>
           <td><%= product.name %></td>
           <td><%= product.rack_id %></td>
@@ -42,7 +53,26 @@
     </tbody>
   </table>
 
+  <!-- Search Filter Script -->
+  <script>
+    const searchInput = document.getElementById("search");
+    const tableRows = document.querySelectorAll("#productTable tr");
+
+    searchInput.addEventListener("keyup", () => {
+      const filter = searchInput.value.toLowerCase();
+
+      tableRows.forEach(row => {
+        const rowText = row.innerText.toLowerCase();
+        if (rowText.includes(filter)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
 
-<%-include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

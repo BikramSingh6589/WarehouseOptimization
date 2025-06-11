@@ -15,6 +15,13 @@
   flex-direction: column;
   padding: 1.5rem;
   position: relative;
+  left: 0;
+  transition: all 0.5s;
+}
+
+
+.main .colourdiv:hover{
+    left: 1.5rem;
 }
 
 .main .colourdiv .title {
@@ -36,12 +43,12 @@ span {
 }
 
 .main .colourdiv .semititle {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   padding-top: 6.5rem;
   display: flex;
   flex-direction: column;
   gap: 4.3rem;
-  font-family: CaveatMedium;
+  font-family: InterRegular;
 }
 
 .textdiv {
@@ -53,9 +60,16 @@ span {
   align-items: flex-start;
 }
 
-.textdiv .logo img {
-  height: 114%;
-  width: 108%;
+.textdiv .logo img{
+    height: 114%;
+    width: 108%;
+    position: relative;
+    left: 0;
+    transition: all 0.8s;
+}
+
+.textdiv .logo img:hover{
+    left: 2.2rem;
 }
 .textdiv .form form {
   display: flex;
@@ -106,6 +120,11 @@ span {
   font-family: InterLight;
   font-weight: 500;
   cursor: pointer;
+  transform: all 0.5s;
+}
+
+.textdiv .form form .s:hover{
+    background: #1f1f1f;
 }
 
 .forPas {

@@ -17,6 +17,10 @@
   flex-direction: column;
 }
 
+span{
+  color: var(--blueColour);
+}
+
 .main .title img {
   height: 5.3vh;
   width: 20%;
