@@ -16,6 +16,10 @@ html,body{
     display: none;
 }
 
+a{
+    text-decoration: none;
+}
+
 
 /* Font-Families  */
 

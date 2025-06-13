@@ -121,11 +121,19 @@ app.get("/home", (req, res) => {
 
 app.get("/verify-otp", (req, res) => {
   
-  res.render("verify-otp.ejs",{
-    name : req.session.tempUser.username
-  }); 
+  if (!req.session.tempUser || !req.session.tempUser.useremail) {
+    return res.redirect("/"); 
+  }
+  let err;
+  if(req.session.msg == 1){
+    err = "Invalid Otp";
+  }
+  req.session.msg = 0;
+  res.render("verify-otp.ejs", {
+    error : err,
+    name: req.session.tempUser.useremail // Safely access useremail now
+  });
 });
-
 // Warehouse Route
 app.get("/warehouse", async (req, res) => {
   try {
@@ -240,7 +248,9 @@ app.post("/verify-otp", async (req, res) => {
       res.status(500).send("Server Error");
     }
   } else {
-    res.status(400).send("Invalid OTP. Please try again.");
+    req.session.msg = 1;
+    res.redirect("/verify-otp");
+    // res.status(400).send("Invalid OTP. Please try again.");
   }
 });
 

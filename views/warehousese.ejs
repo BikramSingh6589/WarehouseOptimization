@@ -3,29 +3,25 @@
 <title>Warehouse</title>
 <link rel="stylesheet" href="/styles/common.css">
 <link rel="stylesheet" href="/styles/ware.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
-
+ <div class="title">
+  <div class="back">
+  <a href="/home"><i class="fa-solid fa-arrow-left"></i></a>
+  </div>
 <h1 class="table">List of Warehouse : </h1>
+</div>
 
-<table class="warehouse-table">
-    <thead>
-        <tr>
-            <th>S.No</th>
-            <th>Warehouse Name</th>
-            <th>Usable Space (sq ft)</th>
-            <th>Link</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% warehouses.forEach(warehouse => { %>
-          <tr>
-            <td><%= warehouse.sno %></td>
-            <td><%= warehouse.name %></td>
-            <td><%= warehouse.usable_space %></td>
-            <td><a href="/manageInv?warehouseName=<%= warehouse.name %>">View</a></td>
-          </tr>
-        <% }) %>
-      </tbody>
-</table>
+
+
+<div class="newDiv">
+   <% warehouses.forEach(warehouse => { %>
+             <a href="/manageInv?warehouseName=<%= warehouse.name %>"> <%= warehouse.name%>  = <span><%= warehouse.usable_space %> sqft </span>  </a>
+
+      <% }) %>
+
+</div>
+
+
 <%- include('partials/footer.ejs') %>
 

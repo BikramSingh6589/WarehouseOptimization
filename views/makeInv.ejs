@@ -2,19 +2,27 @@
 
 <title>Main Page</title>
 <link rel="stylesheet" href="/styles/makeInv.css" />
+<link rel="stylesheet" href="/styles/common.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
 <div class="main">
 
 
   <div class="title">
+    <div class="back">
+      <a href="/home"><i class="fa-solid fa-arrow-left"></i></a>
+    
+    </div>
+
+    <div class="mainh">
     <h1>Warehouse Configuration Setup</h1>
     <img src="/images/greenColour.png" alt="green" />
+    </div>
   </div>
 
  
   <form action="/warehouse" method="POST" id="formm">
-
+    <p class="Note">Note : All the Dimensions are in meter</p>
     <!-- Warehouse Dimensions -->
     <div class="WarehouseDimensions">
       <div class="heading"><h2>Warehouse Dimensions</h2></div>
@@ -104,7 +112,7 @@
       <button type="reset">Reset</button>
     </div>
 
-   <p class="Note">Note : All the Dimensions are in meter</p>
+   
 
   </form>
  

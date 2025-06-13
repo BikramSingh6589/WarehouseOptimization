@@ -14,10 +14,10 @@
     </div>
     <div class="menu">
       <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Storage</a></li>
-        <li><a href="#">Services</a></li>
+        <li><a href="/home">Home</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/Storage">Storage</a></li>
+        <li><a href="#about">Services</a></li>
       </ul>
     </div>
     <div class="profile">
@@ -48,7 +48,7 @@
     </div>
   </section>
 
-  <section class="about">
+  <section class="about" id="about">
     <div class="leftPortion">
       <div class="heading">
         <h3>Streamline your warehouse</h3>
@@ -86,20 +86,26 @@
     </div>
   <% } %>
   
+<!-- ------------------------------------------ -->
+ <!-- profile icons Start-->
+<!-- ------------------------------------------ -->
+
   <% if(name && email && cname){ %>
   <div class="profilei">
     <div class="info">
-      <h3> <%= name %> </h3>
-      <h3><%= email %></h3>
+      <h3> <i class="fa-regular fa-user" style="color: #03aa54;"></i> <%= name %> </h3>
+      <h3> <i class="fa-regular fa-envelope" style="color: #03aa54;"></i> <%= email %></h3>
     </div>
     <hr>
-    <h2><%= cname %></h2>
+    <h2> <i class="fa-regular fa-building" style="color: #03aa54;"></i> <%= cname %></h2>
     <a href="ok2">Logout</a>
   </div>
 
   <% } %>
 </section>
-
+<!-- ------------------------------------------ -->
+ <!-- profile icons Ends -->
+<!-- ------------------------------------------ -->
 
 
 <script>

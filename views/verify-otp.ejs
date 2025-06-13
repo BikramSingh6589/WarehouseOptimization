@@ -1,23 +1,60 @@
 <%- include('partials/header.ejs') %>
 <link rel="stylesheet" href="/styles/otp.css">
-<!-- <link rel="stylesheet" href="/styles/common.css"> -->
- <% if(locals.name){ %> 
-  <div class="Heading">
-    <h1>Two Step Verification</h1>
-    
-    <h3>Enter the verification code Send to <span><%= name %></span></h3>
+<link rel="stylesheet" href="/styles/common.css">
+
+
+<!-- Error Pop Up -->
+<% if(locals.error){ %>
+<div class="showError">
+    <div class="ib">
+      <i
+        class="fa-sharp fa-solid fa-circle-xmark fa-2xl"
+        style="color: #63e6be"
+      ></i>
+    </div>
+    <h1>Incorrect Otp</h1>
+    <h3>Incorrect OTP. Make sure you're entering the latest one. <br>sent to your email.</h3>
+    <button id="ok">Try Again</button>
   </div>
-    <form action="/verify-otp" method="POST">
-      <label for="Content">Type your 6 Digit code : </label>
-     
-      <input type="number" id="otp" name="otp" required maxlength="6" pattern="\d{6}">
-      <button type="submit">Verify</button>
-    </form>
+<% } %> 
+
+<!--  -->
+
+
+<% if(locals.name){ %> 
+
+
+  <div class="box">
+
+  <div class="heading">
+    <h1>Verify Your Email Address</h1>
+    <h3>We have Sent a 6-Digit verification code to <br> 
+    <span><%= name %></span>
+    </h3>
+  </div>
+
  
-    
+    <form action="/verify-otp" method="POST">
+      <label for="Content">Enter Code :  </label>
+      <input type="number" id="otp" name="otp" required maxlength="6" pattern="\d{6}">
+      <p>Wrong email address ? <a href="/">Go back.</a></p>
+      <button type="submit">Next</button>
+    </form>
+
+  </div>  
    <% } else { %> 
   
     <h1>Server Error Please Contact Developer For this Issue</h1>
     <% } %>      
 
+
+  <script>
+    const okButton = document.querySelector("#ok");
+
+  if (okButton) {
+    okButton.addEventListener("click", () => {
+      document.querySelector(".showError").style.display = "none";
+    });
+  }
+  </script>
 <%- include('partials/footer.ejs') %>

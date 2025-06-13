@@ -45,6 +45,16 @@ a {
 
 .menu ul li a {
   color: black;
+  display: block;
+  font-family: InterMedium;
+  transform: scale(1);
+  transition: all 0.5s;
+}
+
+.menu ul li a:hover{
+color: rgb(0, 84, 0);
+/* font-size: 1.3rem; */
+transform: scale(1.2);
 }
 
 .profile {
@@ -52,7 +62,7 @@ a {
   cursor: pointer;
   border: 1px solid #6f6f6f;
   border-radius: 50%;
-  padding: 0.3rem;
+  padding: 0.3rem 0.5rem;
 }
 
 .homePage {
@@ -276,11 +286,22 @@ span {
 }
 
 .profilei .info {
-  font-family: "InterRegular";
+  font-family: InterMedium;
   font-size: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 2rem;
+}
+
+.profilei .info h3{
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.profilei .info h3 i{
+margin-right:0.7rem;
+font-size: 1.3rem;
 }
 
 hr{
@@ -293,13 +314,18 @@ hr{
 }
 
 .profilei .info h3:last-child {
-  color: grey;
+  color: rgb(0, 0, 0);
   font-size: 1.1rem;
   font-weight: 400;
 }
 
+
+
 .profilei h2 {
+  display: flex;
+  align-items: center;
   font-family: InterMedium;
+  gap: 1.2rem;
 }
 
 .profilei a {

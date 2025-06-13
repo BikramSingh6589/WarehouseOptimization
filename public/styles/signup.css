@@ -1,3 +1,35 @@
+
+/* -------------------------------------- */
+/* Doodle Arts Begins */
+/* -------------------------------------- */
+
+#c1{
+    position: absolute;
+    height: 10%;
+    top: 26%;
+    left: 25%;
+}
+
+.l{
+     position: absolute;
+    height: 3%;
+    width: 46%;
+    margin-top: 0.5rem;
+    left: 10%;
+}
+
+#l2{
+  left: 33%;
+}
+
+
+
+/* ----------------------------------------- */
+/* Doodle Art Ends */
+/* ----------------------------------------- */
+
+
+
 .main{
     display: flex;
     align-items: center;
