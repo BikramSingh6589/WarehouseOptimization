@@ -17,8 +17,6 @@
   flex-direction: column;
 }
 
-
-
 .main .title .back {
   position: absolute;
   top: 4%;
@@ -29,16 +27,14 @@
   transition: all 0.5s;
 }
 
-.main .title .back a{
+.main .title .back a {
   text-decoration: none;
   color: black;
   background-color: white;
   transition: all 0.5s;
 }
 
-
-
-span{
+span {
   color: var(--blueColour);
 }
 
@@ -129,7 +125,9 @@ span{
   margin-top: 3rem;
   font-family: "InterMedium";
   font-size: 1.2rem;
+  box-shadow: -2px -3px 0 0 #023076;
 }
+
 
 /* .show {
   z-index: 99;
@@ -261,6 +259,14 @@ span{
   font-family: "InterMedium";
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: 0 0 0 0 black;
+  transform: scale(1);
+  transition: all 0.5s;
+}
+
+.popupMenu button:hover {
+  transform: scale(1.1);
+  box-shadow: -3px 3px 0 0 #0bba0b;
 }
 
 .AddItems {
@@ -284,19 +290,35 @@ span{
   left: 6rem;
   gap: 1.3rem;
   overflow: auto;
+  box-shadow: -4px 4px 0 0 #359857;
+}
+
+.rightSection h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: InterRegular;
 }
 
 .rightSection .submit-btn {
   background-color: #3ac569;
   margin-top: 15px;
   padding: 10px 16px;
-  font-size: 14px;
-  color: white;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-family: InterMedium;
   width: 100%;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
+  box-shadow: 0 0 0 0 green;
+  transform: scale(1);
+  transition: all 0.5s;
+}
+
+.rightSection .submit-btn:hover {
+  transform: scale(1.05);
+  box-shadow: -2px 2px 0 0 #036403;
 }
 
 .product-card {
@@ -304,10 +326,13 @@ span{
   margin-bottom: 10px;
   background: #fff;
   border-left: 5px solid #3ac569;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.product-card i{
+.product-card i {
   margin-left: 1.25rem;
   cursor: pointer;
 }
@@ -322,7 +347,6 @@ span{
   display: none;
 }
 
-
 #aa {
   width: 50vw;
   display: flex;
@@ -333,18 +357,23 @@ span{
   font-family: "InterMedium";
 }
 
-
-#aa span{
+#aa span {
   color: var(--blueColour);
 }
 
-
-#Note{
+#Note {
   position: absolute;
-    top: 4rem;
-    right: 2.3rem;
-    font-size: 1.1rem;
-    color: red;
-    font-weight: 500;
-    font-family: 'InterMedium';
+  top: 4rem;
+  right: 2.3rem;
+  font-size: 1.1rem;
+  color: red;
+  font-weight: 500;
+  font-family: "InterMedium";
+}
+
+
+.ll{
+display: flex;
+flex-direction: column;
+gap: 1rem;
 }

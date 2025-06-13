@@ -6,56 +6,53 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 />
-
-
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
 <div class="main">
-<div class="title">
-  <div class="back">
-    <a href="/warehouse"><i class="fa-solid fa-arrow-left"></i></a>
-  </div>
+  <div class="title">
+    <div class="back">
+      <a href="/warehouse"><i class="fa-solid fa-arrow-left"></i></a>
+    </div>
 
     <h1>Managing Inventory <span><%= warehouseName %> </span></h1>
-    <img src="images/arrowBlue.png" alt="">
-</div>
-<div class="content">
-    <p>This allows users to <span>add new products</span> with attributes like size, weight, and priority, and automatically assigns them to optimal bins using the Knapsack algorithm. Users can also <span>search for a product </span>by ID to <span>instantly retrieve</span> its storage location and view a real-time product list with bin details.</p>
-</div>
-<div class="buttons">
+    <img src="images/arrowBlue.png" alt="" />
+  </div>
+  <div class="content">
+    <p>
+      This allows users to <span>add new products</span> with attributes like
+      size, weight, and priority, and automatically assigns them to optimal bins
+      using the Knapsack algorithm. Users can also
+      <span>search for a product </span>by ID to
+      <span>instantly retrieve</span> its storage location and view a real-time
+      product list with bin details.
+    </p>
+  </div>
+  <div class="buttons">
     <button id="AddProduct">+ ADD PRODUCT</button>
-    <button id="RetrieveProduct"> - RETRIVE PRODUCT</button>
-</div>
-<div class="AddLists">
+    <button id="RetrieveProduct">- RETRIVE PRODUCT</button>
+  </div>
+  <div class="AddLists">
     <a href="/product">See Product List</a>
-</div>
+  </div>
 
+  <!-- --------------------------------------------------- -->
 
-
-
- 
-
-
-<!-- --------------------------------------------------- -->
-
-
-<div class="popupMenu AddItems">
+  <div class="popupMenu AddItems">
     <div class="leftSSection">
       <div class="titlee">
         <h1>Add Product</h1>
-     
-       
       </div>
       <div class="form">
         <div class="inputs">
           <label>Product Name:</label>
-          <input type="text" id="ProductName">
+          <input type="text" id="ProductName" />
         </div>
         <div class="inputs">
           <label>Quantity:</label>
-          <input type="number" id="quant">
+          <input type="number" id="quant" />
         </div>
         <div class="inputs">
           <label>Size (Volume):</label>
-          <input type="number" id="size" max="<%=capacity %>">
+          <input type="number" id="size" max="<%=capacity %>" />
         </div>
         <div class="inputs">
           <label>Priority:</label>
@@ -67,55 +64,73 @@
         </div>
         <div class="inputs">
           <label>Weight:</label>
-          <input type="number" id="weight">
+          <input type="number" id="weight" />
         </div>
-        <button id="clickme" type="button" onclick="addToList()">Add to List</button>
+        <button id="clickme" type="button" onclick="addToList()">
+          Add to List
+        </button>
       </div>
     </div>
-          <p id="Note">⚠️ Load Capacity: <%= capacity %> (Do Not Exceed).</p> 
+    <p id="Note">⚠️ Load Capacity: <%= capacity %> (Do Not Exceed).</p>
     <div class="rightSection">
+      <h1>
+        <lord-icon
+          src="https://cdn.lordicon.com/slkvcfos.json"
+          trigger="hover"
+          style="width: 50px; height: 50px"
+        >
+        </lord-icon>
+        Product Cart
+      </h1>
 
-      <h1>Product List</h1>
+
+      
       <div class="lists" id="productList"></div>
-      <form action="/submit-batch" method="POST" onsubmit="return submitBatch();">
-        <input type="hidden" name="products" id="productsData">
-        <button type="submit" class="submit-btn">Submit All to DB</button>
+      <form
+        action="/submit-batch"
+        method="POST"
+        onsubmit="return submitBatch();"
+      >
+        <input type="hidden" name="products" id="productsData" />
+        <button type="submit" class="submit-btn">Submit Products</button>
       </form>
     </div>
   </div>
 
+  <div class="popupMenu RetrieveItems">
+    <div class="titlee">
+      <h1>Retrieve Product</h1>
+      <img src="images/arrowBlue.png" alt="" />
+    </div>
 
-<div class="popupMenu RetrieveItems">
-  <div class="titlee">
-    <h1>Retrieve Product</h1>
-    <img src="images/arrowBlue.png" alt="">
+    <form action="/retrieve-product" method="POST" class="ll">
+      <input
+        type="text"
+        name="productName"
+        placeholder="Enter Product Name"
+        required
+      />
+      <input type="text" name="quannn" placeholder="Enter the Quantity" />
+
+      <button id="butto" type="submit">Retrieve Item</button>
+    </form>
   </div>
 
-  <form action="/retrieve-product" method="POST">
-    <input type="text" name="productName" placeholder="Enter Product Name" required>
-    <input type="text" name="quannn" placeholder="Enter the Quantity">
-
-    <button id="butto" type="submit">Retrieve Item</button>
-  </form>
-
-
-</div>
-
-
-<% if (typeof rackName !== 'undefined' && typeof binName !== 'undefined') { %>
-<div class="popupMenu ProductFound show" id="aa" style="display: flex;">
-  <h1>Item is found at <span>Rack <%= rackName %></span> and <span>Bin <%= binName %></span></h1>
-  <button onclick="document.querySelector('.ProductFound').style.display='none'">OK</button>
-</div>
-<% } %>
-
-
+  <% if (typeof rackName !== 'undefined' && typeof binName !== 'undefined') { %>
+  <div class="popupMenu ProductFound show" id="aa" style="display: flex">
+    <h1>
+      Item is found at <span>Rack <%= rackName %></span> and
+      <span>Bin <%= binName %></span>
+    </h1>
+    <button
+      onclick="document.querySelector('.ProductFound').style.display='none'"
+    >
+      OK
+    </button>
+  </div>
+  <% } %>
 
   <script src="/styles/nn.js"></script>
 
-
-
-
-
-
-<%-include('partials/footer.ejs') %>
+  <%-include('partials/footer.ejs') %>
+</div>
