@@ -14,6 +14,8 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+
 app.use(
   session({
     secret: "abc",
@@ -37,7 +39,7 @@ db.connect();
 const transporter = nodemailer.createTransport({
   service: "gmail",
   port: 465,
-  secure: true, // true for port 465, false for other ports
+  secure: true, 
   auth: {
     user: "bishtbiko@gmail.com",
     pass: "aips gyqe rpgu uydv",

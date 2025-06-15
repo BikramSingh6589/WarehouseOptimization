@@ -11,6 +11,8 @@
   </div>
 <h1 class="table">List Of Warehouse : </h1>
 
+
+
 </div>
 
 
@@ -18,7 +20,7 @@
 <div class="newDiv">
    <% warehouses.forEach(warehouse => { %>
              <a href="/manageInv?warehouseName=<%= warehouse.name %>"> <%= warehouse.name%>  = <span><%= warehouse.usable_space %> sqft </span>  </a>
-
+              
       <% }) %>
 
 </div>
