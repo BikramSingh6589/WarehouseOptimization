@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const pg = require("pg");
-
+const path = require("path");
 const app = express();
 const nodemailer = require("nodemailer");
 
@@ -37,7 +37,7 @@ db.connect();
 
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
   port: 465,
   secure: true, 
   auth: {
@@ -133,7 +133,7 @@ app.get("/verify-otp", (req, res) => {
   req.session.msg = 0;
   res.render("verify-otp.ejs", {
     error : err,
-    name: req.session.tempUser.useremail // Safely access useremail now
+    name: req.session.tempUser.useremail 
   });
 });
 // Warehouse Route
@@ -212,16 +212,24 @@ app.post("/signup", async (req, res) => {
       otp : otp,
     };
    
+    ejs.renderFile(
+      path.join(__dirname,"views","emailTemplate.ejs"), {name , otp}, async (err,html) =>{
+        if(err){
+          console.log("Ejs render error : ",err);
+          return ;
+        }
+      
      const info = await transporter.sendMail({
-      from: `"Blog Website" bishtbiko@gmail.com>`, // sender address
-      to: email, // list of receivers
-      subject: "Your OTP Code", // Subject line
-      text: `Your OTP code is ${otp}`, // plain text body
-      html: `<b>Your OTP code is <strong>${otp}</strong></b>`, // html body
+      from: `"Blog Website" bishtbiko@gmail.com>`, 
+      to: email, 
+      subject: "Your OTP Code", 
+      text: `Your OTP code is ${otp}`, 
+      html, 
     });
+  }
+  )
 
-    console.log("OTP sent : " , info.messageId);
-
+   
     res.redirect("/verify-otp");
        
 
