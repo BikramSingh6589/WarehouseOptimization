@@ -88,8 +88,7 @@ node app.js
 ```
 
 ## 👨‍💻 Author
-Developed by Bikram Singh Bisht , Anukool Negi , Rahul singh Negi and Somesh uniyal 
-Backend & Algorithm Developer | JavaScript & PostgreSQL Enthusiast
+Developed by Bikram Singh Bisht | JavaScript & PostgreSQL Enthusiast
 
 
 ---
