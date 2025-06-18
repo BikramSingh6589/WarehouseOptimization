@@ -44,15 +44,15 @@
       <div class="form">
         <div class="inputs">
           <label>Product Name:</label>
-          <input type="text" id="ProductName" />
+          <input type="text" id="ProductName" autocomplete="off"/>
         </div>
         <div class="inputs">
           <label>Quantity:</label>
-          <input type="number" id="quant" />
+          <input type="number" id="quant" autocomplete="off" />
         </div>
         <div class="inputs">
           <label>Size (Volume):</label>
-          <input type="number" id="size" max="<%=capacity %>" />
+          <input type="number" id="size" max="<%=capacity %>" autocomplete="off"/>
         </div>
         <div class="inputs">
           <label>Priority:</label>
@@ -64,7 +64,7 @@
         </div>
         <div class="inputs">
           <label>Weight:</label>
-          <input type="number" id="weight" />
+          <input type="number" id="weight" autocomplete="off"/>
         </div>
         <button id="clickme" type="button" onclick="addToList()">
           Add to List
@@ -91,7 +91,7 @@
         method="POST"
         onsubmit="return submitBatch();"
       >
-        <input type="hidden" name="products" id="productsData" />
+        <input type="hidden" name="products" id="productsData" autocomplete="off"/>
         <button type="submit" class="submit-btn">Submit Products</button>
       </form>
     </div>
@@ -109,8 +109,9 @@
         name="productName"
         placeholder="Enter Product Name"
         required
+        autocomplete="off"
       />
-      <input type="text" name="quannn" placeholder="Enter the Quantity" />
+      <input type="text" name="quannn" placeholder="Enter the Quantity" autocomplete="off"/>
 
       <button id="butto" type="submit">Retrieve Item</button>
     </form>

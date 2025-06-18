@@ -184,6 +184,11 @@ app.get("/product", async (req, res) => {
 });
 
 
+
+app.get("/storage",(req,res)=>{
+  res.render("underConstruction.ejs");
+})
+
 // Post Routes ---------------------------------------------
 
 // Signup Section
