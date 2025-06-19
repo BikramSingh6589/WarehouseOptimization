@@ -225,7 +225,7 @@ app.post("/signup", async (req, res) => {
         }
       
      const info = await transporter.sendMail({
-      from: `"Blog Website" bishtbiko@gmail.com>`, 
+      from: `"Shelf_Master" bishtbiko@gmail.com>`, 
       to: email, 
       subject: "Your OTP Code", 
       text: `Your OTP code is ${otp}`, 
