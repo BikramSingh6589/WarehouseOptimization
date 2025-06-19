@@ -308,19 +308,18 @@ app.post("/signin", async (req, res) => {
 // Creating a Warehouse
 
 app.post("/warehouse", async (req, res) => {
-  const {
-    warehouseName,
-    WidthWarehouse,
-    lengthWarehouse,
-    HeightWarehouse,
-    numberOfRacks,
-    WidthOfRacks,
-    LengthOfRacks,
-    HeightOfRacks,
-    LengthOfBins,
-    WidthOfBins,
-    HeightOfBins,
-  } = req.body;
+const warehouseName = req.body.warehouseName;
+const WidthWarehouse = parseFloat(req.body.WidthWarehouse);
+const lengthWarehouse = parseFloat(req.body.lengthWarehouse);
+const HeightWarehouse = parseFloat(req.body.HeightWarehouse);
+const numberOfRacks = parseInt(req.body.numberOfRacks);
+const WidthOfRacks = parseFloat(req.body.WidthOfRacks);
+const LengthOfRacks = parseFloat(req.body.LengthOfRacks);
+const HeightOfRacks = parseFloat(req.body.HeightOfRacks);
+const LengthOfBins = parseFloat(req.body.LengthOfBins);
+const WidthOfBins = parseFloat(req.body.WidthOfBins);
+const HeightOfBins = parseFloat(req.body.HeightOfBins);
+
 
   try {
     // Total volume of warehouse
@@ -384,6 +383,9 @@ app.post("/warehouse", async (req, res) => {
 });
 
 
+// -------------------------------------------------------------------------------------------------------------------------
+// Knapsack Algorithm
+// -------------------------------------------------------------------------------------------------------------------------
 
 function knapsack01(items, capacity) {
   const n = items.length;
@@ -563,8 +565,9 @@ app.post("/submit-batch", async (req, res) => {
 
 
 
-
-// Hashing 
+// --------------------------------------------------------------------------------------------------------------------------------
+// Hashing Algorithm ---- ----- ------ ------ ------ -- 
+// --------------------------------------------------------------------------------------------------------------------------------
 
 
 app.post("/retrieve-product", async (req, res) => {
