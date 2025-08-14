@@ -642,16 +642,7 @@ app.post("/retrieve-product", async (req, res) => {
 
 
 
-// const port = process.env.PORT || 4000;
 
-
-module.exports = app;
-
-
-// if (process.env.VERCEL) {
-//     module.exports = app;
-// } else {
-//     app.listen(port, () => {
-//         console.log(`App is Running at port : ${port}`);
-//     });
-// }
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server is Running at Port 3000");
+});
