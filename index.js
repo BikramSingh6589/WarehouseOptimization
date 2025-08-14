@@ -6,6 +6,7 @@ const session = require("express-session");
 const pg = require("pg");
 const path = require("path");
 const app = express();
+const dotenv = require('dotenv').config();
 const nodemailer = require("nodemailer");
 
 app.use(express.static("public"));
@@ -89,6 +90,7 @@ app.get("/manageInv", async (req, res) => {
     }
 
     console.log("Selected warehouse name:", req.session.warehouseName);
+    
     res.render("managingInv", {
       warehouseName: req.session.warehouseName,
       binName,
@@ -189,7 +191,16 @@ app.get("/storage",(req,res)=>{
   res.render("underConstruction.ejs");
 })
 
+
+
+
+
 // Post Routes ---------------------------------------------
+
+
+
+
+
 
 // Signup Section
 
@@ -605,11 +616,13 @@ app.post("/retrieve-product", async (req, res) => {
       [productName, req.session.warehouseName, req.session.companyName]
     );
       }
-
+      const capacity = result.rows.length ? result.rows[0].capacity : null;
         res.render("managingInv", {
           rackName: rack_id,
           binName: bin_id,
-          warehouseName: req.session.warehouseName
+          warehouseName: req.session.warehouseName,
+          capacity
+        
         });
       } else {
         res.send(`Not enough stock. Available: ${quantity}, Requested: ${q}`);
@@ -630,6 +643,6 @@ app.post("/retrieve-product", async (req, res) => {
 
 
 
-const {} = app.listen(3000, () => {
+const {} = app.listen(process.env.PORT || 3000, () => {
   console.log("Server is Running at Port 3000");
 });
