@@ -644,8 +644,7 @@ app.post("/retrieve-product", async (req, res) => {
 
 const port = process.env.PORT || 4000;
 
-// If running locally -> use app.listen()
-// If on Vercel -> export the app
+
 if (process.env.VERCEL) {
     module.exports = app;
 } else {
