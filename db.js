@@ -7,6 +7,6 @@ const pool = new Pool({
   },
 });
 
-pool.connect();
+
 
 module.exports = pool;
