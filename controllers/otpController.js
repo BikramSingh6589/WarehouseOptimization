@@ -1,5 +1,5 @@
 const db = require('../db.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const get = (req,res)=>{
      if (!req.session.tempUser || !req.session.tempUser.useremail) {
