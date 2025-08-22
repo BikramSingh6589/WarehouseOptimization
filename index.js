@@ -98,6 +98,10 @@ app.get("/storage",(req,res)=>{
 
 // Listen ---------------------------------------------------------------------------------------------
 
-app.listen(process.env.PORT ||3000, () => {
-  console.log("Server is Running at Port 3000");
-});
+// app.listen(process.env.PORT ||3000, () => {
+//   console.log("Server is Running at Port 3000");
+// });
+
+
+
+module.exports = app;
