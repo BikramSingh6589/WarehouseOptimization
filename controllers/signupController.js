@@ -3,11 +3,8 @@ const bcrypt = require('bcryptjs');
 const ejs = require("ejs");
 const path = require("path");
 const transporter = require("../mailer.js");
-const express = require('express');
-const app = express();
 
 
-app.set("views", path.join(__dirname, "../views"));
 
 
 
