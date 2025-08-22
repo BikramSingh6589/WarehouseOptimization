@@ -4,8 +4,6 @@ const ejs = require("ejs");
 const path = require("path");
 const transporter = require("../mailer.js");
 
-app.set("views", path.join(__dirname, "../views"));
-
 
 
 const get = (req, res) => {

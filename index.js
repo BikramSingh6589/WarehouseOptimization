@@ -27,10 +27,13 @@ const verifyOtp = require('./routes/VerificationOtpRoute.js');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-app.set("views", path.join(process.cwd(), "views"));
+// app.set("views", path.join(process.cwd(), "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session);
+app.set("views", path.join(__dirname, "../views"));
+
+
 
 
 // Routes ----------------------------------------------
