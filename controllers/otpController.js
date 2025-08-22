@@ -1,5 +1,5 @@
 const db = require('../db.js');
-const bcrypt = require('bcryptjs');
+
 
 const get = (req,res)=>{
      if (!req.session.tempUser || !req.session.tempUser.useremail) {
@@ -21,10 +21,9 @@ const post = async (req,res)=>{
 
   if (otp === req.session.tempUser.otp) {
     try {
-      const hashedPassword = await bcrypt.hash(req.session.tempUser.pass, 10);
       await db.query(
       "INSERT INTO users (name, email, password, company_name) VALUES ($1, $2, $3, $4)",
-      [req.session.tempUser.username, req.session.tempUser.useremail, hashedPassword, req.session.tempUser.companyName]
+      [req.session.tempUser.username, req.session.tempUser.useremail, req.session.tempUser.pass, req.session.tempUser.companyName]
     );
      res.redirect("/signin");
 
