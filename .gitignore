@@ -1,6 +1,11 @@
-vercel
+node_modules/
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vercel
+*.sql
+*.sql.gz
 sql_file.txt
-env
-node_modules
-package.json
-package-lock.json
+.DS_Store
+Thumbs.db
