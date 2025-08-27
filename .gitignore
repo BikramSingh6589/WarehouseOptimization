@@ -1,6 +1,6 @@
-.vercel
-.sql_file.txt
-.env
-.node_modules
-.package.json
-.package
+vercel
+sql_file.txt
+env
+node_modules
+package.json
+package-lock.json
