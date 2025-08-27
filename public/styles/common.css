@@ -70,7 +70,7 @@ a{
 
 input:-webkit-autofill {
     box-shadow: 0 0 0 1000px #ffffff inset !important; /* white background */
-    -webkit-text-fill-color: #000 !important; /* optional text color */
+    -webkit-text-fill-color: #000 !important; 
     transition: background-color 5000s ease-in-out 0s;
   }
   
